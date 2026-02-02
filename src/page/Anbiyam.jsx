@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
+import { Facebook,  Youtube } from 'lucide-react';
 
-const API_BASE_URL = 'https://church-backend-qk9s.onrender.com/anbiyam';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Anbiyam = () => {
     // State to hold the hero and list data from the API
@@ -18,7 +19,7 @@ const Anbiyam = () => {
 
     const fetchSectionData = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/anbiyampage`);
+            const response = await axios.get(`${API_BASE_URL}/anbiyam/anbiyampage`);
             setAnbiyamPageData(response.data);
         } catch (error) {
             console.error(`Error fetching Anbiyam data:`, error);
@@ -27,7 +28,7 @@ const Anbiyam = () => {
 
     const fetchFooterData = async () => {
         try {
-            const response = await axios.get('https://church-backend-qk9s.onrender.com/land/footer');
+            const response = await axios.get(`${API_BASE_URL}/land/footer`);
             setFooterData(response.data);
         } catch (error) {
             console.error(`Error fetching footer data:`, error);
@@ -96,16 +97,15 @@ const Anbiyam = () => {
                     </div>
                 )}
 
-                <footer className="footer-section">
-                    <Container>
-                        <Row className="justify-content-center text-center">
-                            <Col md={10}>
-                                <h3 className="footer-text">{footerData.title}</h3>
-                                <p className='footer-reference'>{footerData.address}</p>
-                            </Col>
-                        </Row>
-                    </Container>
-                </footer>
+                 <footer className="footer-section" style={{ backgroundColor: 'rgba(158, 204, 243, 1)' }}>
+                <Container className="footer-content" style={{ backgroundColor: 'rgba(158, 204 , 243, 1)' }}>
+                    <h3 className="footer-text">{footerData.title}</h3>
+                    <div className="mt-4 pt-4 border-top border-white text-white-100"></div>
+                    <h3 className="footer-reference" style={{fontWeight:'bold',color:'white', fontSize:'1.2rem'}}>{footerData.address}</h3>
+                    <Youtube size={32} className="mt-3" style={{ cursor: 'pointer', color: 'red' }} onClick={() => window.open('https://www.youtube.com/shorts/0VEV5nsJve0', '_blank')} />
+                    <Facebook size={32} className="mt-3 ms-3" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => window.open('https://www.facebook.com/thooyaarockiya.annaichurch/', '_blank')} />
+                </Container>
+            </footer>
             </div>
         </>
     );

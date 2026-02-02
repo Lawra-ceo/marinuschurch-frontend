@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Facebook,  Youtube } from 'lucide-react';
 
 // The main App component that contains the contact form.
 function Contact() {
+
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     // A placeholder API URL for form submission.
-    const CONTACT_API_URL = 'https://church-backend-qk9s.onrender.com/api/email';
+    const CONTACT_API_URL = `${API_BASE_URL}/api/email`;
     // API URL to fetch church details dynamically.
-    const CHURCH_INFO_API_URL = 'https://church-backend-qk9s.onrender.com/church/admin/info';
+    const CHURCH_INFO_API_URL = `${API_BASE_URL}/church/admin/info`;
 
     // State to store the dynamic church information.
     const [churchInfo, setChurchInfo] = useState(null);
     const [isInfoLoading, setIsInfoLoading] = useState(true);
     const [infoError, setInfoError] = useState(null);
+    const [footerData, setFooterData] = useState({});
+
+
+    const fetchFooterData = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/land/footer`);
+            setFooterData(response.data);
+        } catch (error) {
+            console.error(`Error fetching footer data:`, error);
+        }
+    };
+
+    useEffect(() => {
+            fetchFooterData();
+        }, []);
 
     // State to store the form data (inputs)
     const [formData, setFormData] = useState({
@@ -92,7 +111,7 @@ function Contact() {
     if (infoError) {
         return <p className="text-center p-10 text-red-600">{infoError}</p>;
     }
-    
+
     // The JSX for the contact form layout.
     return (
         <>
@@ -103,7 +122,7 @@ function Contact() {
                         <div className="contact-details">
                             <h2>{churchInfo.head}</h2>
                             <div className="details-list">
-                                 <div className="detail-item">
+                                <div className="detail-item">
                                     <span>📍</span>
                                     <p>{churchInfo.title}</p>
                                 </div>
@@ -197,6 +216,15 @@ function Contact() {
                     </div>
                 </div>
             </div>
+            <footer className="footer-section" style={{ backgroundColor: 'rgba(158, 204, 243, 1)' }}>
+                            <div className="footer-content" style={{ backgroundColor: 'rgba(158, 204 , 243, 1)' }}>
+                                <h3 className="footer-text">{footerData.title}</h3>
+                                <div className="mt-4 pt-4 border-top border-white text-white-100"></div>
+                                 <h3 className="footer-reference" style={{fontWeight:'bold', color:'white', fontSize:'1.2rem'}}>{footerData.address}</h3>
+                                <Youtube size={32} className="mt-3" style={{ cursor: 'pointer', color: 'red' }} onClick={() => window.open('https://www.youtube.com/shorts/0VEV5nsJve0', '_blank')} />
+                                <Facebook size={32} className="mt-3 ms-3" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => window.open('https://www.facebook.com/thooyaarockiya.annaichurch/', '_blank')} />
+                            </div>
+                        </footer>
         </>
     );
 }

@@ -1,16 +1,20 @@
 import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { Facebook, Youtube } from 'lucide-react';
 
 
 const Service = () => {
   const [servicesData, setServicesData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [footerData, setFooterData] = useState({});
+
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchServicesData = async () => {
       try {
-        const response = await axios.get('https://church-backend-qk9s.onrender.com/serv/servicespage');
+        const response = await axios.get(`${API_BASE_URL}/serv/servicespage`);
         setServicesData(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -19,6 +23,20 @@ const Service = () => {
       }
     };
     fetchServicesData();
+  }, []);
+
+
+  const fetchFooterData = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/land/footer`);
+      setFooterData(response.data);
+    } catch (error) {
+      console.error(`Error fetching footer data:`, error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFooterData();
   }, []);
 
   if (isLoading) {
@@ -66,11 +84,14 @@ const Service = () => {
         ))}
       </div>
 
-      <footer className="footer-container">
-        <p className="church-name">தூய ஆரோக்கிய அன்னை ஆலயம்</p>
-        <p className="developer-info">
-          Devloped and Maintained by <span className="bold-text">CoolDreamers LLP</span>, Sivakasi
-        </p>
+      <footer className="footer-section" style={{ backgroundColor: 'rgba(158, 204, 243, 1)' }}>
+        <div className="footer-content" style={{ backgroundColor: 'rgba(158, 204 , 243, 1)' }}>
+          <h3 className="footer-text">{footerData.title}</h3>
+          <div className="mt-4 pt-4 border-top border-white text-white-100"></div>
+           <h3 className="footer-reference" style={{fontWeight:'bold', color:'white', fontSize:'1.2rem'}}>{footerData.address}</h3>
+          <Youtube size={32} className="mt-3" style={{ cursor: 'pointer', color: 'red' }} onClick={() => window.open('https://www.youtube.com/shorts/0VEV5nsJve0', '_blank')} />
+          <Facebook size={32} className="mt-3 ms-3" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => window.open('https://www.facebook.com/thooyaarockiya.annaichurch/', '_blank')} />
+        </div>
       </footer>
     </div>
   );
